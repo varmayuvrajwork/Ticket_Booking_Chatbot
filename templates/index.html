@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Cricket Match Ticket Booking</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<body>
+      <div class="container mt-5">
+            <h1 class="text-center">Cricket Match Ticket Booking</h1>
+            <p class="text-center">Fill in the details below to book your tickets:</p>
+
+            <form id="bookingForm" class="mt-4">
+                  <!-- Calendar for selecting the date -->
+                  <div class="mb-3">
+                  <label for="date" class="form-label">Select Date</label>
+                  <input type="date" class="form-control" id="date" required>
+                  </div>
+
+                  <!-- Dropdown for selecting the match -->
+                  <div class="mb-3">
+                  <label for="match" class="form-label">Select Match</label>
+                  <select class="form-select" id="match" required>
+                  </select>
+                  </div>
+
+                  <!-- Input for selecting the number of seats -->
+                  <div class="mb-3">
+                  <label for="seats" class="form-label">Number of Seats</label>
+                  <input type="number" class="form-control" id="seats" min="1" required>
+                  </div>
+
+                  <button type="button" class="btn btn-primary" onclick="bookTicket()">Book Ticket</button>
+            </form>
+
+            <div id="responseContainer" class="mt-4">
+                  <h3>Response</h3>
+                  <p id="responseText" class="text-muted">Your booking details will appear here.</p>
+            </div>
+      </div>
+
+      <script>
+            async function populateMatches() {
+                  try {
+                  const response = await fetch('/api/matches');
+                  const data = await response.json();
+                  const matchSelect = document.getElementById('match');
+
+                  data.matches.forEach(match => {
+                        const option = document.createElement('option');
+                        option.value = match;
+                        option.textContent = match;
+                        matchSelect.appendChild(option);
+                  });
+                  } catch (error) {
+                  console.error('Error fetching matches:', error);
+                  }
+            }
+
+            async function bookTicket() {
+                  const date = document.getElementById('date').value;
+                  const match = document.getElementById('match').value;
+                  const seats = document.getElementById('seats').value;
+
+                  if (!date || !match || !seats) {
+                  alert("Please fill in all fields.");
+                  return;
+                  }
+
+                  const query = `date=${date}, match=${match}, seats=${seats}`;
+
+                  try {
+                  const response = await fetch('/api/ask', {
+                        method: 'POST',
+                        headers: {
+                              'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ query }),
+                  });
+
+                  const data = await response.json();
+
+                  if (response.ok) {
+                        document.getElementById('responseText').textContent = data.response;
+                  } else {
+                        document.getElementById('responseText').textContent = `Error: ${data.error}`;
+                  }
+                  } catch (error) {
+                  document.getElementById('responseText').textContent = `Error: ${error.message}`;
+                  }
+            }
+            window.onload = populateMatches;
+      </script>
+</body>
+</html>
+

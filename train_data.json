@@ -1,0 +1,28 @@
+{
+      "trains": [
+            {
+            "train_id": "101",
+            "name": "Express A",
+            "route": ["City A", "City B", "City C"],
+            "schedule": {
+                  "City A": "08:00",
+                  "City B": "12:00",
+                  "City C": "16:00"
+            },
+            "seats_available": 100,
+            "price": 50
+            },
+            {
+            "train_id": "102",
+            "name": "Express B",
+            "route": ["City B", "City D", "City E"],
+            "schedule": {
+                  "City B": "09:00",
+                  "City D": "13:00",
+                  "City E": "17:00"
+            },
+            "seats_available": 80,
+            "price": 70
+            }
+      ]
+}
